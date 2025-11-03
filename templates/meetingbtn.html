@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Controls</title>
+    
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <style>
+        .meeting-container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .username-display {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #6c757d;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            word-break: break-word;
+        }
+        
+        .status-display {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+        
+        .status-meeting {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 2px solid #dc3545;
+        }
+        
+        .status-normal {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 2px solid #28a745;
+        }
+        
+        .status-other {
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
+            border: 2px solid #6c757d;
+        }
+        
+        .meeting-button {
+            font-size: 1.25rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .meeting-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .meeting-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-end-meeting {
+            background: #0d6efd;
+            color: white;
+        }
+        
+        .btn-end-meeting:hover:not(:disabled) {
+            background: #0b5ed7;
+        }
+        
+        .btn-start-meeting {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-start-meeting:hover:not(:disabled) {
+            background: #218838;
+        }
+        
+        .loading {
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-top: 1rem;
+        }
+        
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="meeting-container">
+        <div class="username-display">
+            Username: {{ username }}
+        </div>
+        
+        <div id="statusDisplay" class="status-display status-other">
+            Loading status...
+        </div>
+        
+        <button id="meetingButton" class="meeting-button" disabled>
+            Loading...
+        </button>
+        
+        <div id="loadingMessage" class="loading">
+            Checking meeting status...
+        </div>
+        
+        <div id="errorMessage" class="error-message" style="display: none;">
+        </div>
+    </div>
+
+    <script>
+        let currentProgress = null;
+        
+        function updateMeetingStatus(progress) {
+            const statusDisplay = document.getElementById('statusDisplay');
+            const meetingButton = document.getElementById('meetingButton');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Clear any error messages
+            errorMessage.style.display = 'none';
+            loadingMessage.style.display = 'none';
+            
+            if (progress === -2) {
+                // Meeting in progress
+                statusDisplay.textContent = 'A meeting is in progress';
+                statusDisplay.className = 'status-display status-meeting';
+                
+                meetingButton.textContent = 'End Meeting';
+                meetingButton.className = 'meeting-button btn-end-meeting';
+                meetingButton.disabled = false;
+                meetingButton.onclick = endMeeting;
+                
+            } else if (progress === -3) {
+                // Dead body reported - still allow ending the meeting
+                statusDisplay.textContent = 'A dead body has been reported';
+                statusDisplay.className = 'status-display status-meeting';
+                
+                meetingButton.textContent = 'End Meeting';
+                meetingButton.className = 'meeting-button btn-end-meeting';
+                meetingButton.disabled = false;
+                meetingButton.onclick = endMeeting;
+                
+            } else if (progress >= 0 && progress <= 100) {
+                // Normal progress, meeting not in progress
+                statusDisplay.textContent = 'Meeting is not in progress';
+                statusDisplay.className = 'status-display status-normal';
+                
+                meetingButton.textContent = 'Start Meeting';
+                meetingButton.className = 'meeting-button btn-start-meeting';
+                meetingButton.disabled = false;
+                meetingButton.onclick = startMeeting;
+                
+            } else {
+                // Other negative number - disabled state
+                statusDisplay.textContent = 'Meeting controls unavailable';
+                statusDisplay.className = 'status-display status-other';
+                
+                meetingButton.textContent = 'Unavailable';
+                meetingButton.className = 'meeting-button';
+                meetingButton.disabled = true;
+                meetingButton.onclick = null;
+            }
+        }
+        
+        function fetchProgress() {
+            fetch('/api/progress')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && typeof data.progress === 'number') {
+                        currentProgress = data.progress;
+                        updateMeetingStatus(currentProgress);
+                    } else {
+                        showError('Invalid progress data received');
+                    }
+                })
+                .catch(error => {
+                    showError('Failed to check meeting status: ' + error.message);
+                });
+        }
+        
+        function startMeeting() {
+            const meetingButton = document.getElementById('meetingButton');
+            meetingButton.disabled = true;
+            meetingButton.textContent = 'Starting...';
+            
+            fetch('/api/meeting', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Immediately update the UI and then refresh progress
+                    currentProgress = data.progress;
+                    updateMeetingStatus(currentProgress);
+                    setTimeout(fetchProgress, 500); // Refresh after a short delay
+                } else {
+                    showError('Failed to start meeting: ' + (data.error || 'Unknown error'));
+                    // Re-enable button and fetch current progress
+                    fetchProgress();
+                }
+            })
+            .catch(error => {
+                showError('Failed to start meeting: ' + error.message);
+                // Re-enable button and fetch current progress
+                fetchProgress();
+            });
+        }
+        
+        function endMeeting() {
+            const meetingButton = document.getElementById('meetingButton');
+            meetingButton.disabled = true;
+            meetingButton.textContent = 'Ending...';
+            
+            fetch('/api/endmeeting', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Immediately update the UI and then refresh progress
+                    currentProgress = data.progress;
+                    updateMeetingStatus(currentProgress);
+                    setTimeout(fetchProgress, 500); // Refresh after a short delay
+                } else {
+                    showError('Failed to end meeting: ' + (data.error || 'Unknown error'));
+                    // Re-enable button and fetch current progress
+                    fetchProgress();
+                }
+            })
+            .catch(error => {
+                showError('Failed to end meeting: ' + error.message);
+                // Re-enable button and fetch current progress
+                fetchProgress();
+            });
+        }
+        
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            const loadingMessage = document.getElementById('loadingMessage');
+            
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            loadingMessage.style.display = 'none';
+            
+            // Try to recover by re-enabling the button based on current progress
+            if (currentProgress !== null) {
+                updateMeetingStatus(currentProgress);
+            } else {
+                const meetingButton = document.getElementById('meetingButton');
+                meetingButton.disabled = true;
+                meetingButton.textContent = 'Error';
+            }
+        }
+        
+        // Initial load
+        fetchProgress();
+        
+        // Refresh progress every 3 seconds
+        setInterval(fetchProgress, 3000);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

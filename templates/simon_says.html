@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Sequence Task</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='simon_says.css') }}" />
+</head>
+
+<body data-username="{{ username or '' }}">
+  <div class="task">
+    <h1 class="title">O2: Memory Sequence</h1>
+
+    <!-- indicator -->
+    <div class="indicator" aria-live="polite" aria-atomic="true">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="msg">Watch the sequence</span>
+    </div>
+
+    <div class="simon-container">
+      <div class="simon-board">
+        <div class="simon-button red" data-color="red" data-sound="1"></div>
+        <div class="simon-button blue" data-color="blue" data-sound="2"></div>
+        <div class="simon-button green" data-color="green" data-sound="3"></div>
+        <div class="simon-button yellow" data-color="yellow" data-sound="4"></div>
+      </div>
+      
+      <div class="simon-controls">
+        <div class="round-display">
+          <span>Round</span>
+          <div class="round-number">1</div>
+        </div>
+        <button class="start-btn" id="startBtn">Start Sequence</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>✅ Memory Sequence Completed!</h2>
+      <button id="closeModal">Close</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='simon_says.js') }}"></script>
+</body>
+
+</html>

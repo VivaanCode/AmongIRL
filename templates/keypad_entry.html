@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keypad Entry Task</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='keypad_entry.css') }}" />
+</head>
+
+<body data-username="{{ username or '' }}">
+  <div class="task">
+    <h1 class="title">Security: Enter Access Code</h1>
+
+    <!-- indicator -->
+    <div class="indicator" aria-live="polite" aria-atomic="true">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="msg">Find the 4-digit code and enter it</span>
+    </div>
+
+    <!-- Random code will be positioned here by JavaScript -->
+    <div id="randomCode" class="random-code"></div>
+    
+    <div class="keypad-container">
+      
+      <div class="keypad-area">
+        <div class="display">
+          <div class="display-screen">
+            <span class="display-text" id="displayText">- - - -</span>
+          </div>
+        </div>
+        
+        <div class="keypad">
+          <button class="key-btn" data-number="1">1</button>
+          <button class="key-btn" data-number="2">2</button>
+          <button class="key-btn" data-number="3">3</button>
+          <button class="key-btn" data-number="4">4</button>
+          <button class="key-btn" data-number="5">5</button>
+          <button class="key-btn" data-number="6">6</button>
+          <button class="key-btn" data-number="7">7</button>
+          <button class="key-btn" data-number="8">8</button>
+          <button class="key-btn" data-number="9">9</button>
+          <button class="key-btn clear-btn" data-action="clear">CLR</button>
+          <button class="key-btn" data-number="0">0</button>
+          <button class="key-btn enter-btn" data-action="enter">ENT</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>✅ Access Code Accepted!</h2>
+      <button id="closeModal">Close</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='keypad_entry.js') }}"></script>
+</body>
+
+</html>

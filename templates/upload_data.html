@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Data Task</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='task10.css') }}" />
+</head>
+
+<body data-username="{{ username or '' }}">
+  <div class="task">
+    <h1 class="title">Communications: Upload Data</h1>
+
+    <!-- indicator -->
+    <div class="indicator" aria-live="polite" aria-atomic="true">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="msg">Upload the downloaded data to complete the task</span>
+    </div>
+
+    <div class="upload-container">
+      <div class="upload-panel">
+        <div class="panel-header">
+          <h3>DATA UPLOAD TERMINAL</h3>
+        </div>
+        
+        <div class="status-display">
+          <div class="status-line">
+            <span class="status-label">Connection Status:</span>
+            <span class="status-value" id="connectionStatus">CONNECTING...</span>
+          </div>
+          <div class="status-line">
+            <span class="status-label">Data Validation:</span>
+            <span class="status-value" id="validationStatus">PENDING</span>
+          </div>
+          <div class="status-line">
+            <span class="status-label">Upload Progress:</span>
+            <span class="status-value" id="uploadStatus">0%</span>
+          </div>
+        </div>
+        
+        <div class="data-info" id="dataInfo">
+          <p>Searching for downloaded data files...</p>
+        </div>
+        
+        <div class="upload-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="progress-text">UPLOAD IN PROGRESS</div>
+        </div>
+        
+        <button class="upload-btn" id="uploadBtn" disabled>VALIDATE DATA</button>
+      </div>
+      
+      <div class="terminal-output" id="terminalOutput">
+        <div class="terminal-header">SYSTEM LOG</div>
+        <div class="terminal-content">
+          <div class="log-line">> Initializing upload terminal...</div>
+          <div class="log-line">> Checking for data files...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal hidden">
+    <div class="modal-content">
+      <h2 id="modalTitle">✅ Data Upload Complete!</h2>
+      <p id="modalMessage">Data has been successfully uploaded to the main server.</p>
+      <button id="closeModal">Close</button>
+    </div>
+  </div>
+
+  <!-- Error Modal -->
+  <div id="errorModal" class="modal hidden">
+    <div class="modal-content error">
+      <h2>❌ Upload Failed</h2>
+      <p id="errorMessage">No downloaded data found. Complete Task 5 first.</p>
+      <button id="closeErrorModal">Close</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='task10.js') }}"></script>
+</body>
+
+</html>

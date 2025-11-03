@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Control Panel</title>
+    
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .panel-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .panel-header {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 3rem;
+        }
+        
+        .panel-title {
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 1rem;
+        }
+        
+        .panel-subtitle {
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+        
+        .control-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: visible;
+        }
+        
+        .section-title {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .section-title:hover {
+            color: #0dcaf0;
+        }
+        
+        .section-title .collapse-icon {
+            margin-left: 10px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .section-title.collapsed .collapse-icon {
+            transform: rotate(-90deg);
+        }
+        
+        .section-content {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .section-content:not(.collapsed) {
+            overflow: visible;
+        }
+        
+        .section-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            pointer-events: none;
+        }
+        
+        .btn-control {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-control:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-danger-custom {
+            background: linear-gradient(135deg, #dc3545, #b02a37);
+            border: none;
+            color: white;
+        }
+        
+        .btn-success-custom {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            color: white;
+        }
+        
+        .btn-warning-custom {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            border: none;
+            color: #000;
+        }
+        
+        .btn-info-custom {
+            background: linear-gradient(135deg, #17a2b8, #0dcaf0);
+            border: none;
+            color: white;
+        }
+        
+        .status-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .status-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .status-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .progress-input {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #495057;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+        
+        .progress-input:focus {
+            outline: none;
+            border-color: #0dcaf0;
+            box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+        }
+        
+        .response-message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+        
+        .response-success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+            color: #28a745;
+        }
+        
+        .response-error {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+        
+        .player-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+            overflow: visible;
+        }
+        
+        .player-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .player-card:hover {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .player-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .player-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .player-name.crewmate {
+            color: #28a745;
+        }
+        
+        .player-name.imposter {
+            color: #dc3545;
+        }
+        
+        .player-name.no-role {
+            color: #ffffff;
+        }
+        
+        .player-id {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 0.2rem;
+        }
+        
+        .player-actions {
+            position: relative;
+        }
+        
+        .player-menu-btn {
+            background: none;
+            border: none;
+            color: #6c757d;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+        
+        .player-card:hover .player-menu-btn {
+            opacity: 1;
+        }
+        
+        .player-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .player-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            min-width: 120px;
+            display: none;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+        }
+        
+        .player-dropdown.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            color: #fff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.2s ease;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-item.rename {
+            color: #0dcaf0;
+        }
+        
+        .dropdown-item.kick {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="panel-container">
+        <div class="panel-header">
+            <h1 class="panel-title">Game Control Panel</h1>
+            <p class="panel-subtitle">Manage roles, meetings, and game state</p>
+        </div>
+        
+        <div class="row">
+            <!-- Game Status Section -->
+            <div class="col-md-4">
+                <div class="control-section">
+                    <h3 class="section-title" onclick="toggleSection(this)">
+                        Game Status
+                        <span class="collapse-icon">▼</span>
+                    </h3>
+                    
+                    <div class="section-content">
+                    <div class="status-display">
+                        <div class="status-label">Active Players</div>
+                        <div class="status-value" id="playerCount">Loading...</div>
+                    </div>
+                    
+                    <div class="status-display">
+                        <div class="status-label">Game Started</div>
+                        <div class="status-value" id="gameStarted">Loading...</div>
+                    </div>
+                    
+                    <div class="status-display">
+                        <div class="status-label">Progress</div>
+                        <div class="status-value" id="currentProgress">Loading...</div>
+                    </div>
+                    
+                    <div class="status-display">
+                        <div class="status-label">Last Completed Task</div>
+                        <div class="status-value" id="lastTask">Loading...</div>
+                    </div>
+                    
+                    <button class="btn btn-info-custom btn-control" onclick="refreshStatus()">
+                        Refresh Status
+                    </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Role Management Section -->
+            <div class="col-md-4">
+                <div class="control-section">
+                    <h3 class="section-title" onclick="toggleSection(this)">
+                        Role Management
+                        <span class="collapse-icon">▼</span>
+                    </h3>
+                    
+                    <div class="section-content">
+                    <!-- Progress Configuration -->
+                    <div class="mb-3" id="progressConfig">
+                        <label for="progressPercentage" class="form-label text-light">Total Progress Available (%)</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="progressPercentage" value="150" min="100" max="500" step="10">
+                            <span class="input-group-text">%</span>
+                        </div>
+                        <div class="form-text">Default 150% means crewmates can win before completing all tasks. Only changeable when game is not running.</div>
+                    </div>
+                    
+                    <button class="btn btn-success-custom btn-control" onclick="assignRoles()">
+                        Start Game
+                    </button>
+                    
+                    <button class="btn btn-danger-custom btn-control" onclick="clearRoles()">
+                        End Game
+                    </button>
+                    
+                    <button class="btn btn-info-custom btn-control" onclick="viewRoles()">
+                        View Current Roles
+                    </button>
+                    
+                    <div id="rolesDisplay" class="status-display" style="display: none;">
+                        <div class="status-label">Current Roles</div>
+                        <div id="rolesList" style="font-size: 0.9rem; text-align: left;"></div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Meeting Controls Section -->
+            <div class="col-md-4">
+                <div class="control-section">
+                    <h3 class="section-title" onclick="toggleSection(this)">
+                        Meeting Controls
+                        <span class="collapse-icon">▼</span>
+                    </h3>
+                    
+                    <div class="section-content">
+                    <button class="btn btn-warning-custom btn-control" onclick="startEmergencyMeeting()">
+                        Emergency Meeting
+                    </button>
+                    
+                    <select class="progress-input" id="deadBodySelect" style="margin-bottom: 0.5rem;">
+                        <option value="">Select player to report as dead...</option>
+                    </select>
+                    
+                    <button class="btn btn-danger-custom btn-control" onclick="reportDeadBody()">
+                        Report Dead Body
+                    </button>
+                    
+                    <button class="btn btn-success-custom btn-control" onclick="endMeeting()">
+                        End Meeting
+                    </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Progress Controls Section -->
+            <div class="col-md-6">
+                <div class="control-section">
+                    <h3 class="section-title" onclick="toggleSection(this)">
+                        Progress Controls
+                        <span class="collapse-icon">▼</span>
+                    </h3>
+                    
+                    <div class="section-content">
+                    <input type="number" class="progress-input" id="progressInput" 
+                           min="0" max="100" placeholder="Enter progress (0-100)">
+                    
+                    <button class="btn btn-info-custom btn-control" onclick="setProgress()">
+                        Set Progress
+                    </button>
+                    
+                    <button class="btn btn-warning-custom btn-control" onclick="resetProgress()">
+                        Reset Progress
+                    </button>
+                    
+                    <button class="btn btn-success-custom btn-control" onclick="addProgress()">
+                        Add 10% Progress
+                    </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions Section -->
+            <div class="col-md-6">
+                <div class="control-section">
+                    <h3 class="section-title" onclick="toggleSection(this)">
+                        Quick Actions
+                        <span class="collapse-icon">▼</span>
+                    </h3>
+                    
+                    <div class="section-content">
+                    <button class="btn btn-success-custom btn-control" onclick="startNewGame()">
+                        Start New Game
+                    </button>
+                    
+                    <button class="btn btn-warning-custom btn-control" onclick="resetEverything()">
+                        Reset Everything
+                    </button>
+                    
+                    <button class="btn btn-info-custom btn-control" onclick="openAdmin()">
+                        Open Admin Dashboard
+                    </button>
+                    
+                    <button class="btn btn-info-custom btn-control" onclick="openMainGame()">
+                        Open Progress Bar
+                    </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Player Management Section -->
+        <div class="row">
+            <div class="col-12">
+                <div class="control-section">
+                    <h3 class="section-title" onclick="toggleSection(this)">
+                        Player Management
+                        <span class="collapse-icon">▼</span>
+                    </h3>
+                    
+                    <div class="section-content">
+                        <div id="playerList" class="player-list">
+                            <!-- Players will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Response Messages -->
+        <div id="responseMessage" class="response-message"></div>
+    </div>
+
+    <script>
+        // Utility function to show messages
+        function showMessage(message, isError = false) {
+            const messageEl = document.getElementById('responseMessage');
+            messageEl.textContent = message;
+            messageEl.className = `response-message ${isError ? 'response-error' : 'response-success'}`;
+            messageEl.style.display = 'block';
+            
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 5000);
+        }
+        
+        // API call helper
+        async function apiCall(endpoint, method = 'GET', data = null) {
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+                
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+                
+                const response = await fetch(endpoint, options);
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('API call failed:', error);
+                showMessage(`API call failed: ${error.message}`, true);
+                return { success: false, error: error.message };
+            }
+        }
+        
+        // Progress Management Functions
+        async function updateProgressPercentage() {
+            const percentage = parseInt(document.getElementById('progressPercentage').value);
+            if (percentage && percentage >= 100 && percentage <= 500) {
+                const result = await apiCall('/api/set-progress-percentage', 'POST', { percentage: percentage });
+                if (!result.success) {
+                    showMessage(`Error setting progress percentage: ${result.error}`, true);
+                }
+            }
+        }
+        
+        // Role Management Functions
+        async function assignRoles() {
+            // Update progress percentage before starting game
+            await updateProgressPercentage();
+            
+            const result = await apiCall('/api/assign-roles', 'POST');
+            if (result.success) {
+                showMessage(`${result.message}`);
+                refreshStatus();
+                // Disable progress percentage input when game starts
+                document.getElementById('progressPercentage').disabled = true;
+            } else {
+                showMessage(`Failed to assign roles: ${result.error}`, true);
+            }
+        }
+        
+        async function clearRoles() {
+            if (confirm('Are you sure you want to clear all roles? This will reset the entire game.')) {
+                const result = await apiCall('/api/reset-roles', 'POST');
+                if (result.success) {
+                    showMessage(`${result.message}`);
+                    refreshStatus();
+                    document.getElementById('rolesDisplay').style.display = 'none';
+                    // Re-enable progress percentage input when game ends
+                    document.getElementById('progressPercentage').disabled = false;
+                } else {
+                    showMessage(`Failed to clear roles: ${result.error}`, true);
+                }
+            }
+        }
+        
+        async function viewRoles() {
+            const result = await apiCall('/api/current-roles');
+            if (result.success) {
+                const rolesDisplay = document.getElementById('rolesDisplay');
+                const rolesList = document.getElementById('rolesList');
+                
+                if (Object.keys(result.roles).length === 0) {
+                    rolesList.innerHTML = '<div style="text-align: center; color: #6c757d;">No roles assigned</div>';
+                } else {
+                    let rolesHtml = '';
+                    for (const [username, role] of Object.entries(result.roles)) {
+                        const roleColor = role.includes('Imposter') ? '#dc3545' : '#28a745';
+                        rolesHtml += `<div><strong style="color: ${roleColor};">${username}</strong>: ${role}</div>`;
+                    }
+                    rolesList.innerHTML = rolesHtml;
+                }
+                
+                rolesDisplay.style.display = 'block';
+            } else {
+                showMessage(`Failed to get roles: ${result.error}`, true);
+            }
+        }
+        
+        // Meeting Functions
+        async function startEmergencyMeeting() {
+            const result = await apiCall('/api/meeting', 'POST');
+            if (result.success) {
+                showMessage('Emergency meeting started!');
+                refreshStatus();
+            } else {
+                showMessage(`Failed to start meeting: ${result.error}`, true);
+            }
+        }
+        
+        async function reportDeadBody() {
+            const selectedPlayer = document.getElementById('deadBodySelect').value;
+            if (!selectedPlayer) {
+                showMessage('Please select a player to report as dead', true);
+                return;
+            }
+            
+            const result = await apiCall(`/body?dead_player=${encodeURIComponent(selectedPlayer)}`);
+            if (result.success || result.progress) { // body endpoint might not return success
+                showMessage(`Dead body reported: ${selectedPlayer}`);
+                refreshStatus();
+                // Clear selection
+                document.getElementById('deadBodySelect').value = '';
+            } else {
+                showMessage(`Failed to report dead body: ${result.error || 'Unknown error'}`, true);
+            }
+        }
+        
+        async function endMeeting() {
+            const result = await apiCall('/api/endmeeting', 'POST');
+            if (result.success) {
+                showMessage('Meeting ended!');
+                refreshStatus();
+            } else {
+                showMessage(`Failed to end meeting: ${result.error}`, true);
+            }
+        }
+        
+        // Progress Functions
+        async function setProgress() {
+            const progress = document.getElementById('progressInput').value;
+            if (!progress || progress < 0 || progress > 100) {
+                showMessage('Please enter a valid progress value (0-100)', true);
+                return;
+            }
+            
+            const result = await apiCall('/api/progress', 'POST', { progress: parseInt(progress) });
+            if (result.success) {
+                showMessage(`Progress set to ${progress}%`);
+                refreshStatus();
+            } else {
+                showMessage(`Failed to set progress: ${result.error}`, true);
+            }
+        }
+        
+        async function resetProgress() {
+            const result = await apiCall('/api/progress', 'POST', { progress: 0 });
+            if (result.success) {
+                showMessage('Progress reset to 0%');
+                refreshStatus();
+            } else {
+                showMessage(`Failed to reset progress: ${result.error}`, true);
+            }
+        }
+        
+        async function addProgress() {
+            const result = await apiCall('/api/addprogress', 'POST', { progress: 10 });
+            if (result.success) {
+                showMessage('Added 10% progress');
+                refreshStatus();
+            } else {
+                showMessage(`Failed to add progress: ${result.error}`, true);
+            }
+        }
+        
+        // Quick Actions
+        async function startNewGame() {
+            if (confirm('This will reset everything and assign new roles. Continue?')) {
+                await apiCall('/api/reset-roles', 'POST');
+                await apiCall('/api/progress', 'POST', { progress: 0 });
+                const result = await apiCall('/api/assign-roles', 'POST');
+                if (result.success) {
+                    showMessage('New game started!');
+                    refreshStatus();
+                } else {
+                    showMessage(`Failed to start new game: ${result.error}`, true);
+                }
+            }
+        }
+        
+        async function resetEverything() {
+            if (confirm('This will completely reset the game state. Are you sure?')) {
+                await apiCall('/api/reset-roles', 'POST');
+                await apiCall('/api/progress', 'POST', { progress: 0 });
+                await apiCall('/api/endmeeting', 'POST');
+                showMessage('Everything has been reset!');
+                refreshStatus();
+                document.getElementById('rolesDisplay').style.display = 'none';
+            }
+        }
+        
+        function openAdmin() {
+            window.open('/admin', '_blank');
+        }
+        
+        function openMainGame() {
+            window.open('/', '_blank');
+        }
+        
+        // Collapsible sections
+        function toggleSection(titleElement) {
+            const content = titleElement.nextElementSibling;
+            const icon = titleElement.querySelector('.collapse-icon');
+            
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                titleElement.classList.remove('collapsed');
+                icon.textContent = '▼';
+            } else {
+                content.classList.add('collapsed');
+                titleElement.classList.add('collapsed');
+                icon.textContent = '▶';
+            }
+        }
+        
+        // Update player dropdown for dead body reporting
+        function updatePlayerDropdown() {
+            const dropdown = document.getElementById('deadBodySelect');
+            dropdown.innerHTML = '<option value="">Select player to report as dead...</option>';
+            
+            // Get current roles to populate dropdown
+            apiCall('/api/current-roles').then(result => {
+                if (result.success && result.roles) {
+                    Object.keys(result.roles).forEach(username => {
+                        const option = document.createElement('option');
+                        option.value = username;
+                        option.textContent = username;
+                        dropdown.appendChild(option);
+                    });
+                }
+            });
+        }
+        
+        // Status Functions
+        async function refreshStatus() {
+            // Get roles and game status
+            const rolesResult = await apiCall('/api/current-roles');
+            if (rolesResult.success) {
+                document.getElementById('playerCount').textContent = rolesResult.active_player_count;
+                document.getElementById('gameStarted').textContent = rolesResult.game_started ? 'Yes' : 'No';
+                
+                // Update player dropdown when status refreshes
+                updatePlayerDropdown();
+            }
+            
+            // Get progress
+            const progressResult = await apiCall('/api/progress');
+            if (progressResult && typeof progressResult.progress !== 'undefined') {
+                let progressText = `${progressResult.progress}%`;
+                if (progressResult.progress === -2) progressText = 'Emergency Meeting';
+                else if (progressResult.progress === -3) progressText = 'Dead Body Reported';
+                else if (progressResult.progress === -1) progressText = 'Game Over';
+                
+                document.getElementById('currentProgress').textContent = progressText;
+            }
+            
+            // Get last completed task
+            const taskResult = await apiCall('/api/last-completed-task');
+            if (taskResult.success) {
+                document.getElementById('lastTask').textContent = taskResult.last_task || 'None';
+            }
+        }
+        
+        // Player Management Functions
+        function renderPlayerList() {
+            const playerList = document.getElementById('playerList');
+            
+            // Get all active players and their roles
+            Promise.all([
+                apiCall('/api/players'),
+                apiCall('/api/current-roles')
+            ]).then(([playersResult, rolesResult]) => {
+                if (playersResult.success && rolesResult.success) {
+                    let playersHtml = '';
+                    
+                    // If no active players, show empty state
+                    if (playersResult.players.length === 0) {
+                        playersHtml = '<div style="text-align: center; color: #6c757d; padding: 2rem;">No active players in lobby</div>';
+                    } else {
+                        // Create player cards for all active players (including those without roles)
+                        playersResult.players.forEach(username => {
+                            const role = rolesResult.roles[username] || null;
+                            let roleClass = 'no-role';
+                            let roleDisplay = 'Waiting in Lobby';
+                            
+                            if (role && role.includes('Imposter')) {
+                                roleClass = 'imposter';
+                                roleDisplay = role;
+                            } else if (role && role === 'Crewmate') {
+                                roleClass = 'crewmate';
+                                roleDisplay = 'Crewmate';
+                            }
+                            
+                            playersHtml += `
+                                <div class="player-card">
+                                    <div class="player-info">
+                                        <div class="player-name ${roleClass}">${username}</div>
+                                        <div class="player-id">${roleDisplay}</div>
+                                    </div>
+                                    <div class="player-actions">
+                                        <button class="player-menu-btn" onclick="togglePlayerMenu('${username}')">⋯</button>
+                                        <div id="menu-${username}" class="player-dropdown">
+                                            <div class="dropdown-item rename" onclick="renamePlayer('${username}')">Rename</div>
+                                            <div class="dropdown-item kick" onclick="kickPlayer('${username}')">Kick</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    playerList.innerHTML = playersHtml;
+                }
+            });
+        }
+        
+        function togglePlayerMenu(username) {
+            const menu = document.getElementById(`menu-${username}`);
+            
+            // Close all other menus first
+            document.querySelectorAll('.player-dropdown').forEach(dropdown => {
+                if (dropdown.id !== `menu-${username}`) {
+                    dropdown.classList.remove('show');
+                }
+            });
+            
+            menu.classList.toggle('show');
+            
+            // Close menu when clicking elsewhere
+            document.addEventListener('click', function closeMenu(e) {
+                if (!e.target.closest('.player-actions')) {
+                    menu.classList.remove('show');
+                    document.removeEventListener('click', closeMenu);
+                }
+            });
+        }
+        
+        async function renamePlayer(username) {
+            const newName = prompt(`Enter new name for ${username}:`, username);
+            if (newName && newName.trim() && newName !== username) {
+                const result = await apiCall('/api/rename-player', 'POST', { 
+                    old_username: username, 
+                    new_username: newName.trim() 
+                });
+                
+                if (result.success) {
+                    showMessage(`Player renamed from ${username} to ${newName}`);
+                    renderPlayerList();
+                    refreshStatus(); // Update other displays
+                } else {
+                    showMessage(`Failed to rename player: ${result.error}`, true);
+                }
+            }
+            
+            // Hide menu
+            document.getElementById(`menu-${username}`).classList.remove('show');
+        }
+        
+        async function kickPlayer(username) {
+            if (confirm(`Are you sure you want to kick ${username}?`)) {
+                const result = await apiCall('/api/kick-player', 'POST', { username: username });
+                
+                if (result.success) {
+                    showMessage(`${username} has been kicked from the game`);
+                    renderPlayerList();
+                    refreshStatus(); // Update other displays
+                } else {
+                    showMessage(`Failed to kick player: ${result.error}`, true);
+                }
+            }
+            
+            // Hide menu
+            document.getElementById(`menu-${username}`).classList.remove('show');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshStatus();
+            renderPlayerList();
+            // Auto-refresh every 10 seconds
+            setInterval(() => {
+                refreshStatus();
+                renderPlayerList();
+            }, 10000);
+        });
+    </script>
+</body>
+</html>

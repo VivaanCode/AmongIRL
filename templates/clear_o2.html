@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asteroids Task</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='clear_o2.css') }}" />
+</head>
+
+<body data-username="{{ username or '' }}">
+  <div class="task">
+    <h1 class="title">Weapons: Clear Asteroids</h1>
+
+    <!-- indicator -->
+    <div class="indicator" aria-live="polite" aria-atomic="true">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="msg">Click or tap asteroids to destroy them</span>
+    </div>
+
+    <div class="asteroids-container">
+      <div class="space-field" id="spaceField">
+        <!-- Asteroids will be generated here -->
+      </div>
+      
+      <div class="control-panel">
+        <div class="panel-header">
+          <h3>WEAPON TARGETING SYSTEM</h3>
+        </div>
+        
+        <div class="target-stats">
+          <div class="stat-row">
+            <span class="stat-label">Destroyed:</span>
+            <span class="stat-value" id="destroyedCount">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Remaining:</span>
+            <span class="stat-value" id="remainingCount">20</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Active:</span>
+            <span class="stat-value" id="activeCount">0</span>
+          </div>
+        </div>
+        
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+          <span class="progress-text">TARGET PROGRESS</span>
+        </div>
+        
+        <button class="start-btn" id="startBtn">START TARGETING</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>✅ All Asteroids Destroyed!</h2>
+      <button id="closeModal">Close</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='clear_o2.js') }}"></script>
+</body>
+
+</html>

@@ -1,4 +1,64 @@
-<h1>Hi!</h1>
-There isn't really anything here.<br>
-I only really made this because I needed to make a folder so I could drop a bunch of files here.<br>
-<a href="//vivaan.dev">my website</a>
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Bar</title>
+    
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+        <!-- Task Completion Alerts Container -->
+        <div id="taskAlertsContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+        
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-wrapper position-relative">
+                <div class="progress-markers">
+                    <div class="marker" style="left: 0%"></div> <div class="marker" style="left: 10%"></div>
+                    <div class="marker" style="left: 20%"></div> <div class="marker" style="left: 30%"></div>
+                    <div class="marker" style="left: 40%"></div> <div class="marker" style="left: 50%"></div>
+                    <div class="marker" style="left: 60%"></div> <div class="marker" style="left: 70%"></div>
+                    <div class="marker" style="left: 80%"></div> <div class="marker" style="left: 90%"></div>
+                    <div class="marker" style="left: 100%"></div>
+                </div>
+                <div class="progress" role="progressbar" 
+                     aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         id="progressBar" style="width: {{ progress }}%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="victoryMessage" class="d-none"><h1>VICTORY!</h1></div>
+        <div id="defeatMessage" class="d-none"><h1>DEFEAT</h1></div>
+
+        <div id="emergencyMeetingAlert" class="d-none">
+            <div class="justified-text">
+                <span>E</span><span>M</span><span>E</span><span>R</span><span>G</span><span>E</span><span>N</span><span>C</span><span>Y</span>
+            </div>
+            <div class="justified-text">
+                <span>M</span><span>E</span><span>E</span><span>T</span><span>I</span><span>N</span><span>G</span>
+            </div>
+            <div class="caller-info" id="callerInfo"></div>
+        </div>
+
+        <div id="deadBodyAlert" class="d-none">
+            <div class="dead-body-text">
+                <span>DEAD BODY</span>
+            </div>
+            <div class="dead-body-text">
+                <span>REPORTED</span>
+            </div>
+            <div class="dead-body-info">
+                <div class="dead-username" id="deadUsername"></div>
+                <div class="reporter-info" id="reporterInfo"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

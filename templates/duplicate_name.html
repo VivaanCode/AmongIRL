@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Username Taken - {{ username }}</title>
+    
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <style>
+        .error-container {
+            text-align: center;
+            padding: 3rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .error-title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border: 2px solid rgba(220, 53, 69, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            font-size: 1.2rem;
+        }
+        
+        .username-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffc107;
+            margin: 1rem 0;
+        }
+        
+        .instructions {
+            color: #adb5bd;
+            margin: 2rem 0;
+            font-size: 1.1rem;
+        }
+        
+        .action-buttons {
+            margin-top: 2rem;
+        }
+        
+        .btn-custom {
+            margin: 0.5rem;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+        <div class="error-container">
+            <div class="error-title">
+                ⚠️ Username Taken
+            </div>
+            
+            <div class="error-message">
+                <div class="username-display">
+                    "{{ username }}"
+                </div>
+                This username is already being used by an active player.
+            </div>
+            
+            <div class="instructions">
+                You have two options:
+                <br><br>
+                <strong>1.</strong> Choose a different username<br>
+                <strong>2.</strong> Wait for the current user to leave, then try again
+            </div>
+            
+            <div class="action-buttons">
+                <a href="/join" class="btn btn-primary btn-custom">
+                    Try Different Username
+                </a>
+                <button onclick="location.reload()" class="btn btn-outline-light btn-custom">
+                    Try Again
+                </button>
+            </div>
+            
+            <div class="instructions" style="margin-top: 2rem; font-size: 0.9rem;">
+                This page will refresh automatically in 5 seconds to check if the username becomes available.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh every 5 seconds
+        setTimeout(function() {
+            location.reload();
+        }, 5000);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

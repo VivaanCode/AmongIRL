@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task {{ task_number }} - {{ task_name }}</title>
+    
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .task-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .task-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .task-name {
+            font-size: 1.8rem;
+            color: #0dcaf0;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+        
+        .complete-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+            min-width: 200px;
+        }
+        
+        .complete-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+            background: linear-gradient(135deg, #34ce57, #17a2b8);
+        }
+        
+        .complete-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .complete-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .success-message {
+            display: none;
+            color: #28a745;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body data-username="{{ username if username }}">
+    <div class="task-container">
+        <h1 class="task-title">Task {{ task_number }}</h1>
+        <h2 class="task-name">{{ task_name }}</h2>
+        
+        <button id="completeBtn" class="complete-btn">
+            Complete Task
+        </button>
+        
+        <div id="successMessage" class="success-message">
+            ✅ Task Completed Successfully!
+        </div>
+    </div>
+
+    <script>
+        const completeBtn = document.getElementById('completeBtn');
+        const successMessage = document.getElementById('successMessage');
+        
+        completeBtn.addEventListener('click', function() {
+            // Disable button to prevent multiple clicks
+            completeBtn.disabled = true;
+            completeBtn.textContent = 'Completing...';
+            
+            // Add progress
+            fetch('/api/addprogress', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "progress": 10
+                })
+            });
+            
+            // Get username and notify task completion
+            const username = document.body.dataset.username;
+            if (username) {
+                fetch('/api/task-completed', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "username": username
+                    })
+                });
+            }
+            
+            // Show success message
+            setTimeout(() => {
+                completeBtn.style.display = 'none';
+                successMessage.style.display = 'block';
+            }, 500);
+        });
+    </script>
+</body>
+</html>

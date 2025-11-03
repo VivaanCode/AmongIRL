@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ username }} - Role Assignment</title>
+    
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='user.css') }}">
+    <style>
+        .role-container {
+            text-align: center;
+            padding: 1.5rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .username-display {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #6c757d;
+        }
+        
+        .role-display {
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .role-imposter1, .role-imposter2, .role-imposter3 {
+            background: linear-gradient(135deg, #dc3545, #8b0000);
+            color: white;
+            border: 3px solid #dc3545;
+        }
+        
+        .role-crewmate {
+            background: linear-gradient(135deg, #0d6efd, #004085);
+            color: white;
+            border: 3px solid #0d6efd;
+        }
+        
+        .role-waiting {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            border: 3px solid #6c757d;
+        }
+        
+        .waiting-message {
+            font-size: 1rem;
+            color: #adb5bd;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-link {
+            margin-top: 2rem;
+        }
+        
+        .auto-refresh {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 1rem;
+        }
+        
+        .players-list {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: left;
+        }
+        
+        .players-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: #0d6efd;
+        }
+        
+        .player-item {
+            padding: 0.5rem;
+            margin: 0.3rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .player-name {
+            font-weight: bold;
+        }
+        
+        .player-current {
+            background: rgba(13, 110, 253, 0.2);
+            border: 1px solid rgba(13, 110, 253, 0.5);
+        }
+        
+        .other-imposters {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .other-imposters-title {
+            font-weight: bold;
+            color: #dc3545;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tasks-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+        
+        .tasks-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: #20c997;
+        }
+        
+        .task-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .task-section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+            color: #ffc107;
+            border-bottom: 2px solid #ffc107;
+            padding-bottom: 0.3rem;
+        }
+        
+        .task-list {
+            display: grid;
+            gap: 0.8rem;
+        }
+        
+        .task-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 0.8rem;
+            border-left: 4px solid #20c997;
+            transition: all 0.3s ease;
+        }
+        
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .task-name {
+            color: #e9ecef;
+            display: block;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .task-name:hover {
+            color: #20c997;
+            text-decoration: none;
+        }
+        
+        .task-type {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 0.3rem;
+        }
+        
+        .loading-tasks {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .completion-status {
+            background: rgba(32, 201, 151, 0.1);
+            border: 1px solid rgba(32, 201, 151, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .completion-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #20c997;
+            margin-bottom: 0.5rem;
+        }
+        
+        .completion-details {
+            color: #adb5bd;
+            font-size: 0.9rem;
+        }
+        
+        .all-done {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.5);
+            color: #28a745;
+        }
+        
+        .all-done .completion-title {
+            color: #28a745;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid d-flex align-items-start justify-content-center" style="min-height: 100vh; padding: 2rem 0; overflow-y: auto;">
+        <div class="role-container">
+            <!-- Device conflict warning (hidden by default) -->
+            <div id="deviceConflictWarning" class="error-message" style="display: none;">
+                <strong>You have already joined this game on this device with a different username!</strong><br>
+                Current username: {{ username }}<br>
+                Previously joined as: <span id="storedUsername"></span><br><br>
+                <div style="margin: 1rem 0;">
+                    <button onclick="clearUserData()" class="btn btn-warning btn-sm">Clear Cookie</button>
+                </div>
+                <small>You should only see this message if you left the last game before it ended, or closed your user page before the game started last time. If it shows up anyway, talk to the game master.</small>
+            </div>
+
+            <div id="userContent">
+                <div class="username-display">
+                    Player: {{ username }}
+                </div>
+            
+            {% if role %}
+                <div class="role-display role-{{ role.lower() }}">
+                    {{ role }}
+                </div>
+                {% if role.startswith('Imposter') %}
+                    <div class="waiting-message">
+                        🔴 You are an Imposter! Complete fake tasks and eliminate crewmates.
+                    </div>
+                    {% if other_imposters %}
+                        <div class="other-imposters">
+                            <div class="other-imposters-title">Other Imposters:</div>
+                            {% for imposter in other_imposters %}
+                                <div class="player-item">
+                                    <span class="player-name">🔴 {{ imposter }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="waiting-message">
+                        🔵 You are a Crewmate! Complete tasks and find the Imposters.
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="role-display role-waiting">
+                    Waiting for Role Assignment
+                </div>
+                <div class="waiting-message">
+                    Your role will appear here once the game master assigns roles.
+                </div>
+                
+                <!-- Player list before game starts -->
+                <div class="players-list">
+                    <div class="players-title">Players in Game</div>
+                    <div id="playersList">
+                        Loading players...
+                    </div>
+                </div>
+                
+                <div class="auto-refresh">
+                    This page will refresh automatically every 3 seconds.
+                </div>
+            {% endif %}
+            
+            <!-- Tasks Display Section (only show if game has started) -->
+            {% if role %}
+            <div class="tasks-container" id="tasksContainer">
+                {% if role.startswith('Imposter') %}
+                <div class="alert alert-warning" style="background: rgba(220, 53, 69, 0.1); border: 1px solid rgba(220, 53, 69, 0.3); color: #dc3545; margin-bottom: 1rem; padding: 1rem; border-radius: 10px;">
+                    <strong>🎭 Fake Tasks</strong><br>
+                    These are fake tasks for you as an Imposter. Completing them will show on the admin panel but <strong>will NOT contribute to the progress bar</strong>. Use them to blend in with crewmates!
+                </div>
+                {% endif %}
+                <div class="tasks-title">📋 Your Assigned Tasks</div>
+                
+                <div class="task-section">
+                    <div class="task-section-title">🌍 Global Tasks (Everyone)</div>
+                    <div class="task-list" id="globalTasksList">
+                        <div class="loading-tasks">Loading global tasks...</div>
+                    </div>
+                </div>
+                
+                <div class="task-section">
+                    <div class="task-section-title">👤 Individual Tasks (You Only)</div>
+                    <div class="task-list" id="individualTasksList">
+                        <div class="loading-tasks">Loading individual tasks...</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Auto-refresh script for role assignment and heartbeat -->
+    <script>
+        const username = "{{ username }}";
+        const initialResetTime = {{ reset_time }};
+        let lastKnownResetTime = initialResetTime;
+        
+        // Check if user has already joined with a different username on this device
+        function checkDeviceConflict() {
+            const storedUsername = localStorage.getItem('gameUsername');
+            if (storedUsername && storedUsername !== username) {
+                // Check if this is a rename situation
+                fetch(`/api/check-rename/${encodeURIComponent(storedUsername)}/${encodeURIComponent(username)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.is_renamed) {
+                            // This is a legitimate rename - update localStorage and continue
+                            localStorage.setItem('gameUsername', username);
+                        } else {
+                            // This is a real conflict - show warning
+                            document.getElementById('deviceConflictWarning').style.display = 'block';
+                            document.getElementById('userContent').style.display = 'none';
+                            document.getElementById('storedUsername').textContent = storedUsername;
+                        }
+                    })
+                    .catch(error => {
+                        // On error, assume it's a conflict to be safe
+                        document.getElementById('deviceConflictWarning').style.display = 'block';
+                        document.getElementById('userContent').style.display = 'none';
+                        document.getElementById('storedUsername').textContent = storedUsername;
+                    });
+                return true; // Potential conflict - let async check handle it
+            }
+            return false; // No conflict
+        }
+        
+        // Only save username if no conflict detected
+        if (!checkDeviceConflict()) {
+            localStorage.setItem('gameUsername', username);
+        }
+        
+        {% if role %}
+        // Save role to localStorage when assigned
+        localStorage.setItem('gameRole', "{{ role }}");
+        {% endif %}
+        
+        // Function to clear localStorage (when user clicks clear cookie button)
+        function clearUserData() {
+            localStorage.removeItem('gameUsername');
+            localStorage.removeItem('gameRole');
+            alert('User data cleared! You can now join with this username again.');
+            // Hide warning and show content again, then save current username
+            document.getElementById('deviceConflictWarning').style.display = 'none';
+            document.getElementById('userContent').style.display = 'block';
+            localStorage.setItem('gameUsername', username);
+        }
+        
+        // Check if roles have been reset
+        function checkRoleReset() {
+            fetch('/api/reset-status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.last_reset_time > lastKnownResetTime) {
+                        // Roles have been reset - clear localStorage and reload
+                        localStorage.removeItem('gameUsername');
+                        localStorage.removeItem('gameRole');
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    // Silent error handling
+                });
+        }
+        
+        // Check for role reset every 2 seconds
+        setInterval(checkRoleReset, 2000);
+        
+        // Load user tasks if role is assigned
+        {% if role %}
+        function loadUserTasks() {
+            fetch('/api/user-tasks')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Display completion status if available
+                        if (data.completion_status) {
+                            const tasksContainer = document.getElementById('tasksContainer');
+                            
+                            // Remove existing completion status to prevent duplicates
+                            const existingStatus = tasksContainer.querySelector('.completion-status');
+                            if (existingStatus) {
+                                existingStatus.remove();
+                            }
+                            
+                            let completionHtml = '';
+                            
+                            if (data.completion_status.all_complete) {
+                                completionHtml = `
+                                    <div class="completion-status all-done">
+                                        <div class="completion-title">🎉 You're Done!</div>
+                                        <div class="completion-details">You've completed all your assigned tasks!</div>
+                                    </div>
+                                `;
+                            } else {
+                                const totalCompleted = data.completion_status.global_completed + data.completion_status.individual_completed;
+                                const totalTasks = data.completion_status.global_total + data.completion_status.individual_total;
+                                completionHtml = `
+                                    <div class="completion-status">
+                                        <div class="completion-title">📊 Progress: ${totalCompleted}/${totalTasks} tasks completed</div>
+                                        <div class="completion-details">
+                                            Global: ${data.completion_status.global_completed}/${data.completion_status.global_total} • 
+                                            Individual: ${data.completion_status.individual_completed}/${data.completion_status.individual_total}
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                            
+                            // Insert completion status after tasks title
+                            const tasksTitle = tasksContainer.querySelector('.tasks-title');
+                            if (tasksTitle) {
+                                tasksTitle.insertAdjacentHTML('afterend', completionHtml);
+                            }
+                        }
+                        
+                        // Display global tasks
+                        const globalTasksList = document.getElementById('globalTasksList');
+                        if (data.global_tasks && data.global_tasks.length > 0) {
+                            globalTasksList.innerHTML = data.global_tasks.map(task => 
+                                `<div class="task-item">
+                                    <a href="/task${task.id}" class="task-name">
+                                        ${task.name}
+                                        <div class="task-type">Task ${task.id}</div>
+                                    </a>
+                                </div>`
+                            ).join('');
+                        } else {
+                            globalTasksList.innerHTML = '<div class="loading-tasks">All global tasks completed!</div>';
+                        }
+                        
+                        // Display individual tasks
+                        const individualTasksList = document.getElementById('individualTasksList');
+                        if (data.individual_tasks && data.individual_tasks.length > 0) {
+                            individualTasksList.innerHTML = data.individual_tasks.map(task => 
+                                `<div class="task-item">
+                                    <a href="/task${task.id}" class="task-name">
+                                        ${task.name}
+                                        <div class="task-type">Task ${task.id}</div>
+                                    </a>
+                                </div>`
+                            ).join('');
+                        } else {
+                            individualTasksList.innerHTML = '<div class="loading-tasks">All individual tasks completed!</div>';
+                        }
+                    } else {
+                        document.getElementById('globalTasksList').innerHTML = '<div class="loading-tasks">Error loading tasks</div>';
+                        document.getElementById('individualTasksList').innerHTML = '<div class="loading-tasks">Error loading tasks</div>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('globalTasksList').innerHTML = '<div class="loading-tasks">Error loading tasks</div>';
+                    document.getElementById('individualTasksList').innerHTML = '<div class="loading-tasks">Error loading tasks</div>';
+                });
+        }
+        
+        // Load tasks when page loads
+        loadUserTasks();
+        
+        // Refresh tasks every 5 seconds
+        setInterval(loadUserTasks, 5000);
+        {% endif %}
+        
+        // Heartbeat function to keep user active
+        function sendHeartbeat() {
+            fetch('/api/ping', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: username })
+            }).then(response => {
+                // If user has been kicked, redirect to join page
+                if (response.status === 403) {
+                    window.location.href = '/join?kicked=1';
+                }
+            }).catch(error => {
+                // Silent error handling for heartbeat
+            });
+        }
+        
+        // Send heartbeat every 8 seconds (well under the 25 second server timeout)
+        setInterval(sendHeartbeat, 8000);
+        
+        // Send initial heartbeat
+        sendHeartbeat();
+        
+        // Clear cookies when tab/window is closed (before roles assigned)
+        window.addEventListener('beforeunload', function() {
+            {% if not role %}
+            // Only clear if no role assigned yet
+            localStorage.removeItem('gameUsername');
+            localStorage.removeItem('gameRole');
+            {% endif %}
+        });
+        
+        // Function to update players list
+        function updatePlayersList() {
+            fetch('/api/players')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const playersListDiv = document.getElementById('playersList');
+                        if (playersListDiv) {
+                            let html = '';
+                            data.players.forEach(player => {
+                                const isCurrentUser = player === username;
+                                const playerClass = isCurrentUser ? 'player-item player-current' : 'player-item';
+                                const playerIcon = isCurrentUser ? '👤' : '🎮';
+                                html += `<div class="${playerClass}">
+                                    <span class="player-name">${playerIcon} ${player}</span>
+                                    ${isCurrentUser ? ' (You)' : ''}
+                                </div>`;
+                            });
+                            if (html === '') {
+                                html = '<div class="player-item">No players found</div>';
+                            }
+                            playersListDiv.innerHTML = html;
+                        }
+                    }
+                })
+                .catch(error => {
+                    // Silent error handling
+                });
+        }
+        
+        // Update players list initially and every 2 seconds if no role assigned
+        {% if not role %}
+        updatePlayersList();
+        setInterval(updatePlayersList, 2000);
+        
+        // Auto-refresh every 3 seconds if no role is assigned
+        setTimeout(function() {
+            location.reload();
+        }, 3000);
+        {% endif %}
+    </script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

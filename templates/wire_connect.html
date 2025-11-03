@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fix Wiring Task</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='wire_connect.css') }}" />
+</head>
+
+<body data-username="{{ username or '' }}">
+  <div class="task">
+    <h1 class="title">Electrical: Fix Wiring</h1>
+
+    <!-- indicator -->
+    <div class="indicator" aria-live="polite" aria-atomic="true">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="msg">Connect matching wires</span>
+    </div>
+
+    <div class="wiring-panel">
+      <div class="left-side">
+        <div class="wire-start red" data-color="red" data-wire="1"></div>
+        <div class="wire-start blue" data-color="blue" data-wire="2"></div>
+        <div class="wire-start yellow" data-color="yellow" data-wire="3"></div>
+        <div class="wire-start green" data-color="green" data-wire="4"></div>
+      </div>
+      
+      <div class="connection-area">
+        <svg class="wire-svg">
+          <!-- Wire connections will be drawn here -->
+        </svg>
+      </div>
+      
+      <div class="right-side">
+        <div class="wire-end yellow" data-color="yellow" data-wire="3"></div>
+        <div class="wire-end green" data-color="green" data-wire="4"></div>
+        <div class="wire-end red" data-color="red" data-wire="1"></div>
+        <div class="wire-end blue" data-color="blue" data-wire="2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>✅ Wiring Fixed Successfully!</h2>
+      <button id="closeModal">Close</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='wire_connect.js') }}"></script>
+</body>
+
+</html>

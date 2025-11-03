@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Swipe Card Task</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='swipecard.css') }}" />
+</head>
+
+<body data-username="{{ username if username }}">
+  <div class="task">
+    <h1 class="title">Admin: Swipe Card</h1>
+
+    <!-- indicator -->
+    <div class="indicator" aria-live="polite" aria-atomic="true">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="msg">Swipe card</span>
+    </div>
+
+    <div class="reader">
+      <div class="slot">
+        <div class="slot-track"></div>
+      </div>
+    </div>
+
+    <div class="card" role="button" aria-label="Crewmate ID card" tabindex="0">
+      <div class="chip"></div>
+      <div class="stripe"></div>
+      <div class="name">CREWMATE</div>
+      <div class="id">ID: 9F2-7A4</div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>✅ Task Completed Successfully!</h2>
+      <button id="closeModal">Close</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='swipecard.js') }}"></script>
+</body>
+
+</html>

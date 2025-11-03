@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Game - Enter Username</title>
+    
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <style>
+        .join-container {
+            text-align: center;
+            padding: 3rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .join-title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #0d6efd, #6f42c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+        
+        .username-form {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .form-control {
+            font-size: 1.2rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #0d6efd;
+            color: white;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        
+        .btn-join {
+            font-size: 1.3rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #0d6efd, #6f42c1);
+            border: none;
+            font-weight: bold;
+        }
+        
+        .btn-join:hover {
+            background: linear-gradient(135deg, #0b5ed7, #6528e0);
+            transform: translateY(-2px);
+        }
+        
+        .error-message {
+            color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .instructions {
+            color: #adb5bd;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+        <div class="join-container">
+            <div class="join-title">
+                Join Game
+            </div>
+            
+            {% if error %}
+                <div class="error-message">
+                    {{ error }}
+                </div>
+            {% endif %}
+            
+            {% if game_in_progress %}
+                <div class="error-message">
+                    <strong>⚠️ Game Already In Progress</strong><br>
+                    A game is currently running with roles already assigned.<br>
+                    You can join now, but you'll have to wait for the next round to participate.<br>
+                    <small>You won't get a role until the game master starts a new game.</small>
+                </div>
+            {% endif %}
+            
+            {% if kicked %}
+                <div class="error-message">
+                    <strong>🚫 You Have Been Kicked</strong><br>
+                    You were removed from the game by the game master.<br>
+                    You can rejoin with the same or a different username.
+                </div>
+            {% endif %}
+            
+            <!-- Duplicate join warning (hidden by default) -->
+            <div id="duplicateWarning" class="error-message" style="display: none;">
+                <strong>You have already joined this game on this device!</strong><br>
+                Username: <span id="existingUsername"></span><br><br>
+                <div style="margin: 1rem 0;">
+                    <button onclick="clearUserData()" class="btn btn-warning btn-sm">Clear Cookie</button>
+                </div>
+                <small>You should only see this message if you left the last game before it ended, or closed your user page before the game started last time. If it shows up anyway, talk to the game master.</small>
+            </div>
+            
+            <div id="joinForm" class="username-form">
+                <form method="POST" action="{% if debug_mode %}/panel/join{% else %}/join{% endif %}">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="username" 
+                               placeholder="Enter your username" 
+                               maxlength="20" 
+                               pattern="[a-zA-Z0-9_]+" 
+                               title="Username can only contain letters, numbers, and underscores"
+                               required autofocus>
+                    </div>
+                    {% if debug_mode %}
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="force_join" id="forceJoin">
+                                <label class="form-check-label" for="forceJoin">
+                                    Force Join (replace existing user with same name)
+                                </label>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-join btn-lg">
+                        Join Game{% if debug_mode %} (Debug){% endif %}
+                    </button>
+                </form>
+                
+                <div class="instructions">
+                    Choose a unique username to join the game.<br>
+                    You'll be assigned a role once the game master starts the round.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user has already joined on this device
+        function checkExistingUser() {
+            // Skip cookie check in debug mode
+            {% if debug_mode %}
+                return; // Debug mode - allow multiple users on same device
+            {% endif %}
+            
+            const existingUsername = localStorage.getItem('gameUsername');
+            if (existingUsername) {
+                // User has already joined with ANY username - show warning and hide form
+                document.getElementById('duplicateWarning').style.display = 'block';
+                document.getElementById('joinForm').style.display = 'none';
+                document.getElementById('existingUsername').textContent = existingUsername;
+            }
+        }
+        
+        // Function to clear localStorage (when user clicks clear cookie button)
+        function clearUserData() {
+            localStorage.removeItem('gameUsername');
+            localStorage.removeItem('gameRole');
+            // Hide warning and show form again
+            document.getElementById('duplicateWarning').style.display = 'none';
+            document.getElementById('joinForm').style.display = 'block';
+            alert('User data cleared! You can now join with a new username.');
+        }
+        
+        // Check when page loads
+        document.addEventListener('DOMContentLoaded', checkExistingUser);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

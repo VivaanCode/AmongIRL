@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fuel Engines Task</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='fuel_engines.css') }}" />
+</head>
+
+<body data-username="{{ username or '' }}">
+  <div class="task">
+    <h1 class="title">Upper Engine: Fuel Engines</h1>
+
+    <!-- indicator -->
+    <div class="indicator" aria-live="polite" aria-atomic="true">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="msg">Drag fuel cans to each engine</span>
+    </div>
+
+    <div class="fuel-container">
+      <div class="engines-area">
+        <div class="engine" id="engine1" data-engine="1">
+          <div class="engine-body">
+            <div class="engine-gauge">
+              <div class="gauge-needle" id="needle1"></div>
+              <div class="gauge-label">ENGINE 1</div>
+            </div>
+            <div class="fuel-slot" id="slot1">
+              <span class="slot-text">FUEL PORT</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="engine" id="engine2" data-engine="2">
+          <div class="engine-body">
+            <div class="engine-gauge">
+              <div class="gauge-needle" id="needle2"></div>
+              <div class="gauge-label">ENGINE 2</div>
+            </div>
+            <div class="fuel-slot" id="slot2">
+              <span class="slot-text">FUEL PORT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="fuel-supply">
+        <div class="supply-label">FUEL SUPPLY</div>
+        <div class="fuel-cans">
+          <div class="fuel-can" id="can1" draggable="true">
+            <div class="can-body">
+              <div class="can-label">FUEL</div>
+              <div class="fuel-level"></div>
+            </div>
+          </div>
+          <div class="fuel-can" id="can2" draggable="true">
+            <div class="can-body">
+              <div class="can-label">FUEL</div>
+              <div class="fuel-level"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>✅ Engines Fueled Successfully!</h2>
+      <button id="closeModal">Close</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='fuel_engines.js') }}"></script>
+</body>
+
+</html>

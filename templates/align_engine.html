@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Align Engine Output Task</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='align_engine.css') }}" />
+</head>
+
+<body data-username="{{ username or '' }}">
+  <div class="task">
+    <h1 class="title">Lower Engine: Align Output</h1>
+
+    <!-- indicator -->
+    <div class="indicator" aria-live="polite" aria-atomic="true">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="msg">Rotate dials to match the target pattern</span>
+    </div>
+
+    <div class="engine-container">
+      <div class="target-display">
+        <h3>TARGET PATTERN</h3>
+        <div class="pattern-grid">
+          <div class="pattern-dial">
+            <div class="dial-pointer target" style="transform: translate(-50%, -100%) rotate(45deg)"></div>
+          </div>
+          <div class="pattern-dial">
+            <div class="dial-pointer target" style="transform: translate(-50%, -100%) rotate(135deg)"></div>
+          </div>
+          <div class="pattern-dial">
+            <div class="dial-pointer target" style="transform: translate(-50%, -100%) rotate(225deg)"></div>
+          </div>
+          <div class="pattern-dial">
+            <div class="dial-pointer target" style="transform: translate(-50%, -100%) rotate(315deg)"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="control-panel">
+        <h3>ENGINE OUTPUT</h3>
+        <div class="dials-grid">
+          <div class="control-dial" data-dial="1">
+            <div class="dial-base">
+              <div class="dial-pointer" id="pointer1" style="transform: rotate(0deg)"></div>
+              <div class="dial-center"></div>
+            </div>
+          </div>
+          <div class="control-dial" data-dial="2">
+            <div class="dial-base">
+              <div class="dial-pointer" id="pointer2" style="transform: rotate(0deg)"></div>
+              <div class="dial-center"></div>
+            </div>
+          </div>
+          <div class="control-dial" data-dial="3">
+            <div class="dial-base">
+              <div class="dial-pointer" id="pointer3" style="transform: rotate(0deg)"></div>
+              <div class="dial-center"></div>
+            </div>
+          </div>
+          <div class="control-dial" data-dial="4">
+            <div class="dial-base">
+              <div class="dial-pointer" id="pointer4" style="transform: rotate(0deg)"></div>
+              <div class="dial-center"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>✅ Engine Output Aligned!</h2>
+      <button id="closeModal">Close</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='align_engine.js') }}"></script>
+</body>
+
+</html>

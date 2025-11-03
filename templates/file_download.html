@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Download Data Task</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='file_download.css') }}" />
+</head>
+
+<body data-username="{{ username or '' }}">
+  <div class="task">
+    <h1 class="title">Communications: Download Data</h1>
+
+    <!-- indicator -->
+    <div class="indicator" aria-live="polite" aria-atomic="true">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="msg">Click start to begin download</span>
+    </div>
+
+    <div class="download-container">
+      <div class="terminal">
+        <div class="terminal-header">
+          <span class="terminal-title">SECURE DATA TRANSFER v2.1</span>
+        </div>
+        
+        <div class="terminal-body">
+          <div class="file-info">
+            <div class="file-line">
+              <span class="label">File:</span> 
+              <span class="value">nav_data_2025.dat</span>
+            </div>
+            <div class="file-line">
+              <span class="label">Size:</span> 
+              <span class="value">847.2 KB</span>
+            </div>
+            <div class="file-line">
+              <span class="label">Status:</span> 
+              <span class="value status" id="status">Ready</span>
+            </div>
+          </div>
+          
+          <div class="progress-section">
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+              <div class="progress-text" id="progressText">0%</div>
+            </div>
+            
+            <div class="download-stats" id="stats">
+              <div class="stat">
+                <span class="stat-label">Speed:</span>
+                <span class="stat-value" id="speed">-- KB/s</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">ETA:</span>
+                <span class="stat-value" id="eta">--:--</span>
+              </div>
+            </div>
+          </div>
+          
+          <button class="download-btn" id="startBtn">START DOWNLOAD</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>✅ Data Downloaded Successfully!</h2>
+      <button id="closeModal">Close</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='file_download.js') }}"></script>
+</body>
+
+</html>

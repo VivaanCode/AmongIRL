@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Task Monitor</title>
+    
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .admin-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 600px;
+            width: 90%;
+        }
+        
+        .admin-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .task-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid rgba(40, 167, 69, 0.3);
+        }
+        
+        .task-label {
+            color: #6c757d;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .task-name {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #28a745;
+            text-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+            margin: 0;
+            min-height: 3rem;
+        }
+        
+        .no-task {
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #28a745;
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1 class="admin-title">
+            <span class="status-indicator"></span>
+            Task Monitor
+        </h1>
+        
+        <div class="task-display">
+            <div class="task-label">Last Completed Task</div>
+            <div class="task-name" id="taskName">
+                {{ last_task if last_task else "No tasks completed yet" }}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Poll for updates every 1 second
+        setInterval(async () => {
+            try {
+                const response = await fetch('/api/last-completed-task');
+                const data = await response.json();
+                
+                const taskNameElement = document.getElementById('taskName');
+                if (data.success && data.last_task) {
+                    taskNameElement.textContent = data.last_task;
+                    taskNameElement.classList.remove('no-task');
+                } else {
+                    taskNameElement.textContent = "No tasks completed yet";
+                    taskNameElement.classList.add('no-task');
+                }
+            } catch (error) {
+                console.error('Error fetching task updates:', error);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
