@@ -1,0 +1,285 @@
+:root {
+  --bg: #0e1420;
+  --panel: #162033;
+  --accent: #40c4ff;
+  --good: #35e07b;
+  --bad: #ff5c5c;
+  --text: #e6f2ff;
+  --muted: #abc4d6;
+  --wire-red: #ff4444;
+  --wire-blue: #4488ff;
+  --wire-yellow: #ffcc00;
+  --wire-green: #44ff44;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(1200px 800px at 70% -10%, #162033 0%, var(--bg) 60%);
+  color: var(--text);
+  font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+.task {
+  width: clamp(320px, 80vw, 800px);
+  background: linear-gradient(180deg, #1a2740 0%, var(--panel) 100%);
+  border: 2px solid #0b1220;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  position: relative;
+}
+
+.title {
+  margin: 0 0 10px;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  user-select: none;
+  margin-bottom: 12px;
+}
+
+.indicator .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #777;
+  box-shadow: 0 0 12px 0 transparent;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+.indicator.good .dot {
+  background: var(--good);
+  box-shadow: 0 0 16px 2px rgba(53, 224, 123, 0.6);
+}
+.indicator.bad .dot {
+  background: var(--bad);
+  box-shadow: 0 0 16px 2px rgba(255, 92, 92, 0.5);
+}
+
+.indicator .msg {
+  color: var(--text);
+  opacity: 0.9;
+}
+
+.wiring-panel {
+  position: relative;
+  height: clamp(280px, 35vh, 350px);
+  background: #0f182a;
+  border: 2px solid #0b1220;
+  border-radius: 12px;
+  padding: clamp(12px, 2.5vw, 20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(10px, 2vw, 20px);
+}
+
+@media (max-width: 768px) {
+  .wiring-panel {
+    height: 300px;
+    gap: 8px;
+    padding: 16px;
+  }
+}
+
+.left-side, .right-side {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2vh, 20px);
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .left-side, .right-side {
+    gap: 16px;
+  }
+}
+
+.wire-start, .wire-end {
+  width: clamp(50px, 8vw, 60px);
+  height: clamp(18px, 3vw, 20px);
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  touch-action: none;
+  min-height: 40px;
+  min-width: 40px;
+  margin: clamp(6px, 1.2vw, 8px) 0;
+}
+
+@media (max-width: 768px) {
+  .wire-start, .wire-end {
+    width: 55px;
+    height: 22px;
+    margin: 10px 0;
+    min-height: 44px;
+    min-width: 44px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wire-start, .wire-end {
+    width: 50px;
+    height: 20px;
+    margin: 12px 0;
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+.wire-start:hover, .wire-end:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.wire-start.red, .wire-end.red {
+  background: var(--wire-red);
+}
+
+.wire-start.blue, .wire-end.blue {
+  background: var(--wire-blue);
+}
+
+.wire-start.yellow, .wire-end.yellow {
+  background: var(--wire-yellow);
+}
+
+.wire-start.green, .wire-end.green {
+  background: var(--wire-green);
+}
+
+.wire-start.connected, .wire-end.connected {
+  border-color: var(--good);
+  box-shadow: 0 0 10px var(--good);
+}
+
+.wire-start.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 15px var(--accent);
+  transform: scale(1.15);
+}
+
+.connection-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  touch-action: none;
+}
+
+.wire-svg {
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.wire-path {
+  stroke-width: 4;
+  fill: none;
+  transition: stroke 0.3s ease;
+}
+
+.wire-path.red {
+  stroke: var(--wire-red);
+}
+
+.wire-path.blue {
+  stroke: var(--wire-blue);
+}
+
+.wire-path.yellow {
+  stroke: var(--wire-yellow);
+}
+
+.wire-path.green {
+  stroke: var(--wire-green);
+}
+
+.temp-wire {
+  stroke-width: 3;
+  opacity: 0.7;
+}
+
+.temp-wire.red {
+  stroke: var(--wire-red);
+}
+
+.temp-wire.blue {
+  stroke: var(--wire-blue);
+}
+
+.temp-wire.yellow {
+  stroke: var(--wire-yellow);
+}
+
+.temp-wire.green {
+  stroke: var(--wire-green);
+}
+
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: var(--panel);
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-content h2 {
+  margin: 0 0 16px;
+  color: var(--good);
+}
+
+.modal-content button {
+  background: var(--accent);
+  border: none;
+  padding: 12px 24px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+}
+
+.modal-content button:hover {
+  background: #2fb4e0;
+}

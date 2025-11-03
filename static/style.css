@@ -1,0 +1,203 @@
+html, body {
+    overflow: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar,
+html::-webkit-scrollbar, body::-webkit-scrollbar, 
+*::-webkit-scrollbar {
+    display: none;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.container-fluid {
+    position: relative;
+    transition: all 0.5s ease-in-out;
+}
+
+.progress-container {
+    width: 80vw;
+    max-width: 800px;
+    min-width: 300px;
+}
+
+.progress-wrapper {
+    width: 100%;
+}
+
+.progress {
+    height: 2rem;
+    border-radius: 1rem;
+    margin-top: 1rem;
+}
+
+.progress-markers {
+    position: absolute;
+    top: -0.5rem;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    z-index: 10;
+}
+
+.marker {
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background-color: var(--bs-border-color);
+    transform: translateX(-50%);
+    opacity: 0.7;
+}
+
+.marker::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -3px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--bs-border-color);
+    border-radius: 50%;
+}
+
+
+#victoryMessage,
+#defeatMessage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vw;
+    text-align: center;
+}
+
+#victoryMessage h1, #defeatMessage h1 {
+    font-size: 10vw;
+    font-weight: bold;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+#victoryMessage h1 { color: #28a745; }
+#defeatMessage h1 { color: #dc3545; }
+
+#emergencyMeetingAlert {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #0dcaf0;
+    font-weight: bold;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    background-color: rgba(21, 25, 29, 0.85);
+    animation: pulseAnimation 1.5s infinite;
+}
+
+#deadBodyAlert {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #dc3545;
+    font-weight: bold;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    background-color: rgba(21, 25, 29, 0.85);
+    animation: pulseAnimation 1.5s infinite;
+}
+
+.dead-body-text {
+    display: flex;
+    justify-content: center;
+    font-size: 6vw;
+    width: 100%;
+    text-align: center;
+}
+
+.dead-body-info {
+    margin-top: 3vh;
+    text-align: center;
+}
+
+.dead-username {
+    font-size: 4vw;
+    color: #fff;
+    margin-bottom: 1vh;
+}
+
+.reporter-info {
+    font-size: 2.5vw;
+    color: #ffc107;
+    position: absolute;
+    bottom: 10vh;
+    right: 5vw;
+}
+
+.caller-info {
+    font-size: 2.5vw;
+    color: #ffc107;
+    position: absolute;
+    bottom: 10vh;
+    right: 5vw;
+}
+
+.justified-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8vw;
+    width: 80%;
+    max-width: 900px;
+}
+
+.progress-container-minimized {
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    width: 60vw;
+    transform: translateX(-50%) scale(0.8);
+    transition: all 0.5s ease-in-out;
+    z-index: 99;
+}
+
+
+.fade-in { animation: fadeInAnimation 0.8s forwards; }
+.fade-out { animation: fadeOutAnimation 0.8s forwards; }
+
+@keyframes fadeInAnimation { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeOutAnimation { from { opacity: 1; } to { opacity: 0; } }
+@keyframes pulseAnimation { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+
+@media (max-width: 576px) {
+    .progress-container {
+        width: 95vw;
+    }
+
+    .progress {
+        height: 1.5rem;
+    }
+}
