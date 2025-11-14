@@ -57,3 +57,16 @@ API Endpoints (DO NOT GIVE THESE TO YOUR PLAYERS):
 ```
 - `POST` `/api/reset-roles`: Ends a game by resetting all roles.
 - `POST` `/api/ping`: Players on the `/user` page automatically ping this endpoint every few seconds. If it stops being pinged (the user has disconnec
+- `POST` `/api/players`: Returns the list of players
+- `POST` `/api/rename-player`: Send this request with the following JSON: old_username, new_username. Renames the player based on the values. If you kick/rename a player, it may not let them join back using that same username.
+- `POST` `/api/kick-player`: Send this request with JSON for "username". Kicks the player with that username. If you kick/rename a player, it may not let them join back using that same username.
+- `GET` `/api/reset-status`: Tells you when the roles were last reset.
+- `GET` `/api/check-rename/<old_username>/<new_username>`: Tells you if <old_username> was renamed to <new_username>.
+- `GET` `/api/user-tasks`: Tells assigned tasks based on "username" cookie.
+- `POST` `/api/task-completed`: Gets username and task completed from JSON, and uses it to notify the `/` page to add progress.
+- `GET` `/api/latest-task-completion` or `/api/last-completed-task`: Used by the `/admin` page to grab the last task completed.
+- `POST` `/api/set-progress-percentage`: Sets the required percentage of tasks to be completed for a win. See `/panel` above.
+- `GET` `/body`: API endpoint to report a dead body. GET so that players can access this as a QR code optionally.
+- `GET` `/reportbody`: Shows a page with a button to report a dead body
+- `GET` `/meeting` and similarly `/endmeeting`: Start and end emergency meetings respectively. GET so they can be put on QR codes/NFC tags. `/endmeeting` can be used to end a dead body report.
+- `GET` `/api/current-roles`: Returns current player roles, used for `/panel`.
