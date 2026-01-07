@@ -1,5 +1,7 @@
 # AmongIRL
-Note: This code is very badly written. AI wrote most of it and and about a quarter of the code could be rewritten to be better. If you have the time, I appreciate any help in the form of pull requests.
+**Edit:** I have now rewritten the game in Node.js. I don't have the time to rewrite README, but you can use the .replit file to run it using node.js on replit.
+
+
 Before you do anything, create a `.env` file for PANEL_PASSWORD.
 
 ### Why I made this
