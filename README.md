@@ -5,6 +5,30 @@ Before you do anything, create a `.env` file for PANEL_PASSWORD.
 ### Why I made this
 When I was younger, I liked playing the game Among Us, so my friends and I made slips to assign roles and played it in real life. It was fun, but nowhere near the real game. Therefore, I decided to work on coding up a way to play the actual game in real life.
 
+## Project Structure
+- `app.py` - Main Flask application with all routes, game logic, and API endpoints
+- `main.py` - Entry point to run the Flask development server
+- `templates/` - Jinja2 HTML templates for all game pages
+- `static/` - CSS and JavaScript files for each task and the main UI
+- `pyproject.toml` - Python dependencies configuration
+
+## Key Features
+- Player join/leave system with username tracking
+- Role assignment (Crewmates and Imposters)
+- 10 interactive mini-tasks (swipe card, wire connect, simon says, etc.)
+- Admin panel with password protection
+- Progress tracking system
+- Meeting button functionality
+
+## Environment Variables
+- `SESSION_SECRET` - Flask session secret key (should auto set)
+- `PANEL_PASSWORD` - Password for admin panel access (required)
+
+## Running the Application
+- Development: `python main.py` (runs on port 5000)
+- Production: Uses gunicorn with the command `gunicorn --bind=0.0.0.0:5000 --reuse-port app:app`
+
+
 My idea was that you would pick someone's house and prepare it beforehand. The progress bar for tasks would go on a big screen visible from afar `(/)`, and each player would join `(/join)` on their own phone. Then, once the game was started, the server would automatically assign roles and tasks.
 The tasks are NFC tags (or QR codes) put around the house in different locations. Each player would \[tap their phone/scan the code to\] open a task, which would they register that they completed it and add progress to the bar. I go more into detail about how it actually works in the next section.
 My friends and I had a lot of fun the few times we did this, so I thought I would put it out there to grow my portfolio and let anyone else improve or use this for themselves.
