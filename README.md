@@ -1,5 +1,6 @@
 # AmongIRL
 **Edit:** I have now rewritten the game in Node.js. I don't have the time to rewrite README, but you can use the .replit file to run it using node.js on replit.
+**Edit 2:** All of it is broken :) I am now rewriting this from scratch, but if you run this, use Python (Flask) and Jinja2.
 
 
 Before you do anything, create a `.env` file for PANEL_PASSWORD.
