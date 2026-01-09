@@ -1,5 +1,5 @@
 # AmongIRL
-
+Ignore the `.js` files, they are useless and broken
 
 Before you do anything, create a `.env` file for PANEL_PASSWORD.
 
